@@ -15,7 +15,7 @@ export class UserRepository extends Repository<User> {
     const { username, password } = authCredentialsDto;
     const salt = await bcrypt.genSalt();
 
-    const user = new User();
+    const user = this.create();
     user.username = username;
     user.salt = salt;
     user.password = await this.hashPassword( password, user.salt );
@@ -36,7 +36,7 @@ export class UserRepository extends Repository<User> {
     const user = await this.findOne( { username } );
 
 
-    if ( user && await user.validateUserPassword( password ) ) {
+    if ( user && await user.validatedPassword( password ) ) {
       return user.username;
     } else {
       return null;
